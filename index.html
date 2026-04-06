@@ -29,6 +29,7 @@
 
     <style>
         /* أنماط عامة وتأثيرات الانتقال */
+        html { scroll-behavior: smooth; }
         body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
         .app-view { display: none; animation: fadeIn 0.4s ease-out; }
         .app-view.active { display: block; }
@@ -252,7 +253,6 @@
             } else {
                 backBtn.classList.remove('hidden');
             }
-            window.scrollTo(0, 0);
         }
 
         // 2. بيانات ووظائف الخريطة التفاعلية (Flowchart)
