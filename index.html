@@ -61,7 +61,8 @@
             #view-actionplan { display: block !important; } /* فقط خطة العمل تطبع */
             .print-container { box-shadow: none !important; border: none !important; }
         }
-            /* تحسينات إضافية */
+
+        /* تحسينات إضافية */
         .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
         .hover-scale { transition: transform 0.2s; }
         .hover-scale:hover { transform: scale(1.02); }
@@ -231,6 +232,391 @@
             </div>
 
             <button onclick="navigateTo('view-notes')" class="bg-purple-600 hover:bg-purple-700 text-white font-black px-10 py-4 rounded-xl text-xl transition shadow-lg shadow-purple-200">قراءة الدليل</button>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         الشاشة 2: الخريطة التفاعلية (Flowchart View)
+         ========================================================= -->
+    <div id="view-flowchart" class="app-view max-w-[1600px] mx-auto px-6 py-12">
+        <div class="flex justify-between items-end mb-12">
+            <div>
+                <h2 class="text-3xl font-black text-slate-900 mb-2">خريطة تدفق العمليات (End-to-End)</h2>
+                <p class="text-slate-600">اضغط على أي قسم لعرض المهام التفصيلية ومؤشرات الأداء.</p>
+            </div>
+            <div class="flex gap-4 no-print">
+                <div class="flex items-center gap-2 text-sm font-bold text-slate-500 bg-white px-4 py-2 rounded-lg border border-slate-200">
+                    <span class="w-3 h-3 bg-blue-600 rounded-full"></span> الهندسة
+                </div>
+                <div class="flex items-center gap-2 text-sm font-bold text-slate-500 bg-white px-4 py-2 rounded-lg border border-slate-200">
+                    <span class="w-3 h-3 bg-amber-500 rounded-full"></span> التخطيط
+                </div>
+                <div class="flex items-center gap-2 text-sm font-bold text-slate-500 bg-white px-4 py-2 rounded-lg border border-slate-200">
+                    <span class="w-3 h-3 bg-rose-600 rounded-full"></span> الإنتاج
+                </div>
+            </div>
+        </div>
+
+        <!-- حاوية الخريطة -->
+        <div class="overflow-x-auto pb-12">
+            <div class="min-w-[1400px] space-y-12 relative">
+                
+                <!-- الحارة 1: الواجهة والاعتماد -->
+                <div class="flex items-center gap-0">
+                    <div class="w-32 font-black text-slate-400 text-sm uppercase tracking-widest border-l-2 border-slate-200 ml-8">Engineering</div>
+                    <div class="flex items-center">
+                        <div class="flow-card" onclick="openFlowModal('commercial')">
+                            <i class="fa-solid fa-handshake text-blue-600 mb-2 text-xl"></i>
+                            <div class="font-bold">المبيعات والمالية</div>
+                        </div>
+                        <div class="connector-horizontal"></div>
+                        <div class="flow-card" onclick="openFlowModal('projects')">
+                            <i class="fa-solid fa-ruler-combined text-blue-600 mb-2 text-xl"></i>
+                            <div class="font-bold">المشروعات</div>
+                        </div>
+                        <div class="connector-horizontal"></div>
+                        <div class="flow-card" onclick="openFlowModal('technical')">
+                            <i class="fa-solid fa-compass-drafting text-blue-600 mb-2 text-xl"></i>
+                            <div class="font-bold">المكتب الفني</div>
+                        </div>
+                        <div class="connector-horizontal"></div>
+                        <div class="flow-card border-emerald-500 bg-emerald-50 pulse-gate" onclick="openFlowModal('approval')">
+                            <i class="fa-solid fa-file-signature text-emerald-600 mb-2 text-xl"></i>
+                            <div class="font-bold">بوابة الاعتماد</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الحارة 2: التخطيط والموارد -->
+                <div class="flex items-center gap-0">
+                    <div class="w-32 font-black text-slate-400 text-sm uppercase tracking-widest border-l-2 border-slate-200 ml-8">Planning</div>
+                    <div class="flex items-center">
+                        <div class="flow-card border-amber-400" onclick="openFlowModal('planning')">
+                            <i class="fa-solid fa-network-wired text-amber-600 mb-2 text-xl"></i>
+                            <div class="font-bold">التخطيط</div>
+                        </div>
+                        <div class="connector-horizontal"></div>
+                        <div class="parallel-bracket h-32 w-8"></div>
+                        <div class="flex flex-col gap-4 -ml-1">
+                            <div class="flow-card border-amber-400" onclick="openFlowModal('inventory')">
+                                <i class="fa-solid fa-boxes-stacked text-amber-600 mb-2 text-xl"></i>
+                                <div class="font-bold">المخازن</div>
+                            </div>
+                            <div class="flow-card border-amber-400" onclick="openFlowModal('purchasing')">
+                                <i class="fa-solid fa-cart-shopping text-amber-600 mb-2 text-xl"></i>
+                                <div class="font-bold">المشتريات</div>
+                            </div>
+                        </div>
+                        <div class="parallel-bracket-left h-32 w-8 -ml-1"></div>
+                    </div>
+                </div>
+
+                <!-- الحارة 3: الإنتاج -->
+                <div class="flex items-center gap-0">
+                    <div class="w-32 font-black text-slate-400 text-sm uppercase tracking-widest border-l-2 border-slate-200 ml-8">Production</div>
+                    <div class="flex items-center">
+                        <div class="parallel-bracket h-64 w-8"></div>
+                        <div class="flex flex-col gap-4 -ml-1">
+                            <div class="flow-card border-rose-400" onclick="openFlowModal('panels')">
+                                <i class="fa-solid fa-layer-group text-rose-600 mb-2 text-xl"></i>
+                                <div class="font-bold">المسطحات</div>
+                            </div>
+                            <div class="flow-card border-rose-400" onclick="openFlowModal('solid')">
+                                <i class="fa-solid fa-tree text-rose-600 mb-2 text-xl"></i>
+                                <div class="font-bold">الخشب الطبيعي</div>
+                            </div>
+                            <div class="flow-card border-rose-400" onclick="openFlowModal('paint')">
+                                <i class="fa-solid fa-spray-can text-rose-600 mb-2 text-xl"></i>
+                                <div class="font-bold">الدهانات</div>
+                            </div>
+                            <div class="flow-card border-rose-400" onclick="openFlowModal('upholstery')">
+                                <i class="fa-solid fa-couch text-rose-600 mb-2 text-xl"></i>
+                                <div class="font-bold">التنجيد</div>
+                            </div>
+                        </div>
+                        <div class="parallel-bracket-left h-64 w-8 -ml-1"></div>
+                        <div class="connector-horizontal"></div>
+                        <div class="flow-card border-slate-800 bg-slate-50" onclick="openFlowModal('maintenance')">
+                            <i class="fa-solid fa-wrench text-slate-800 mb-2 text-xl"></i>
+                            <div class="font-bold">الصيانة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الحارة 4: الجودة واللوجستيات -->
+                <div class="flex items-center gap-0">
+                    <div class="w-32 font-black text-slate-400 text-sm uppercase tracking-widest border-l-2 border-slate-200 ml-8">Delivery</div>
+                    <div class="flex items-center">
+                        <div class="flow-card border-emerald-500" onclick="openFlowModal('qc')">
+                            <i class="fa-solid fa-shield-halved text-emerald-600 mb-2 text-xl"></i>
+                            <div class="font-bold">الجودة المرحلية</div>
+                        </div>
+                        <div class="connector-horizontal"></div>
+                        <div class="flow-card border-purple-500" onclick="openFlowModal('assembly')">
+                            <i class="fa-solid fa-screwdriver-wrench text-purple-600 mb-2 text-xl"></i>
+                            <div class="font-bold">التجميع والتغليف</div>
+                        </div>
+                        <div class="connector-horizontal"></div>
+                        <div class="flow-card border-emerald-500" onclick="openFlowModal('final_qc')">
+                            <i class="fa-solid fa-shield-check text-emerald-600 mb-2 text-xl"></i>
+                            <div class="font-bold">الجودة النهائية</div>
+                        </div>
+                        <div class="connector-horizontal"></div>
+                        <div class="flow-card border-slate-500" onclick="openFlowModal('logistics')">
+                            <i class="fa-solid fa-truck-fast text-slate-600 mb-2 text-xl"></i>
+                            <div class="font-bold">إدارة الحركة</div>
+                        </div>
+                        <div class="connector-horizontal"></div>
+                        <div class="flow-card border-brand-500 bg-brand-50" onclick="openFlowModal('after_sales')">
+                            <i class="fa-solid fa-user-check text-brand-600 mb-2 text-xl"></i>
+                            <div class="font-bold">التسليم والتركيب</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قسم التطوير (منفصل) -->
+                <div class="mt-12 pt-12 border-t border-slate-200">
+                    <div class="flex items-center justify-center">
+                        <div class="flow-card border-slate-800 bg-slate-900 text-white w-80" onclick="openFlowModal('training_development')">
+                            <i class="fa-solid fa-graduation-cap text-brand-400 mb-2 text-2xl"></i>
+                            <div class="font-black text-lg">إدارة التطوير والتدريب</div>
+                            <div class="text-xs text-slate-400 mt-1">محرك التحسين المستمر</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال تفاصيل القسم (Flowchart Modal) -->
+    <div id="flowModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div id="flowModalBox" class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-95 opacity-0">
+            <div id="fmHeader" class="p-6 flex justify-between items-start text-white bg-slate-800">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
+                        <i id="fmIcon" class="fa-solid fa-info text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 id="fmTitle" class="text-2xl font-black">اسم القسم</h3>
+                        <p id="fmSubtitle" class="text-white/80 font-medium">وصف مختصر</p>
+                    </div>
+                </div>
+                <button onclick="closeFlowModal()" class="bg-white/10 hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-slate-400 font-bold text-xs uppercase tracking-widest mb-4">المهام الرئيسية</h4>
+                        <ul id="fmTasks" class="space-y-3 font-bold text-slate-700">
+                            <!-- تملأ برمجياً -->
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <h4 class="text-slate-400 font-bold text-xs uppercase tracking-widest mb-4">مؤشر الأداء (KPI)</h4>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-brand-100 text-brand-600 rounded-lg flex items-center justify-center">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <p id="fmKPI" class="font-black text-slate-900 text-lg leading-tight">اسم المؤشر</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 p-4 text-center border-t border-slate-100">
+                <button onclick="closeFlowModal()" class="text-slate-500 font-bold hover:text-slate-800 transition">إغلاق النافذة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         الشاشة 3: العرض التقديمي (Slides View)
+         ========================================================= -->
+    <div id="view-slides" class="app-view max-w-6xl mx-auto px-6 py-12">
+        <div class="presentation-container shadow-2xl">
+            
+            <!-- شريحة 0: البداية -->
+            <div id="slide-0" class="slide-item active">
+                <div class="slide-bg-effect"></div>
+                <div class="slide-content text-center">
+                    <div class="mb-8 inline-block mx-auto">
+                        <div class="w-24 h-24 bg-brand-500 rounded-3xl flex items-center justify-center text-5xl shadow-lg shadow-brand-500/20">
+                            <i class="fa-solid fa-rocket"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-6xl font-black mb-6 leading-tight">نحو منظومة تشغيل<br><span class="text-brand-400">عالمية المعايير</span></h2>
+                    <p class="text-2xl text-slate-400 max-w-2xl mx-auto">استراتيجية مصنع إبداع للتحول من "العمل الفردي" إلى "النظام المؤسسي المتكامل".</p>
+                </div>
+            </div>
+
+            <!-- شريحة 1: الفلسفة -->
+            <div id="slide-1" class="slide-item">
+                <div class="slide-bg-effect"></div>
+                <div class="slide-content">
+                    <h3 class="text-brand-400 font-black text-xl mb-4">01. فلسفة النظام</h3>
+                    <h2 class="text-5xl font-black mb-12">لماذا نحتاج لهذا النظام الآن؟</h2>
+                    <div class="grid grid-cols-3 gap-8">
+                        <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+                            <div class="text-4xl mb-4 text-amber-400"><i class="fa-solid fa-link-slash"></i></div>
+                            <h4 class="text-xl font-bold mb-2">كسر الجزر المنعزلة</h4>
+                            <p class="text-slate-400">ربط المبيعات بالإنتاج والمخازن في تدفق واحد لا ينقطع.</p>
+                        </div>
+                        <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+                            <div class="text-4xl mb-4 text-emerald-400"><i class="fa-solid fa-gauge-high"></i></div>
+                            <h4 class="text-xl font-bold mb-2">القياس اللحظي</h4>
+                            <p class="text-slate-400">تحويل الأداء من "انطباعات شخصية" إلى "أرقام ومؤشرات" دقيقة.</p>
+                        </div>
+                        <div class="bg-white/5 p-8 rounded-2xl border border-white/10">
+                            <div class="text-4xl mb-4 text-blue-400"><i class="fa-solid fa-shield-check"></i></div>
+                            <h4 class="text-xl font-bold mb-2">ضمان الجودة</h4>
+                            <p class="text-slate-400">بناء نظام يمنع الخطأ قبل وقوعه بدلاً من معالجته لاحقاً.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شريحة 2: الربط -->
+            <div id="slide-2" class="slide-item">
+                <div class="slide-bg-effect"></div>
+                <div class="slide-content">
+                    <h3 class="text-brand-400 font-black text-xl mb-4">02. آلية الربط</h3>
+                    <h2 class="text-5xl font-black mb-12">مثلث القوة في التشغيل</h2>
+                    <div class="flex items-center justify-center gap-12">
+                        <div class="text-center w-64">
+                            <div class="w-32 h-32 bg-blue-600 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 border-4 border-white/20">1</div>
+                            <h4 class="text-2xl font-bold">المدخلات</h4>
+                            <p class="text-slate-400 mt-2">بيانات دقيقة من المبيعات والمكتب الفني.</p>
+                        </div>
+                        <div class="text-4xl text-slate-600"><i class="fa-solid fa-arrow-left"></i></div>
+                        <div class="text-center w-64">
+                            <div class="w-32 h-32 bg-amber-500 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 border-4 border-white/20">2</div>
+                            <h4 class="text-2xl font-bold">المعالجة</h4>
+                            <p class="text-slate-400 mt-2">تخطيط ذكي وجدولة إنتاج صارمة.</p>
+                        </div>
+                        <div class="text-4xl text-slate-600"><i class="fa-solid fa-arrow-left"></i></div>
+                        <div class="text-center w-64">
+                            <div class="w-32 h-32 bg-emerald-600 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 border-4 border-white/20">3</div>
+                            <h4 class="text-2xl font-bold">المخرجات</h4>
+                            <p class="text-slate-400 mt-2">منتج مطابق للمواصفات في الوقت المحدد.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شريحة 3: الخاتمة -->
+            <div id="slide-3" class="slide-item">
+                <div class="slide-bg-effect"></div>
+                <div class="slide-content text-center">
+                    <h2 class="text-5xl font-black mb-8">شعارنا للمرحلة القادمة</h2>
+                    <div class="bg-white/5 p-12 rounded-[40px] border border-white/10 inline-block">
+                        <p class="text-7xl font-black text-brand-400 tracking-tighter">نظام واحد.. هدف واحد.. إبداع واحد</p>
+                    </div>
+                    <p class="text-2xl text-slate-400 mt-12">شكراً لثقتكم.. لنبدأ التنفيذ فوراً.</p>
+                </div>
+            </div>
+
+            <!-- التحكم في الشرائح -->
+            <div class="absolute bottom-0 left-0 w-full p-6 flex justify-between items-center bg-slate-900/80 backdrop-blur-md border-t border-white/5 z-20">
+                <div class="flex gap-4">
+                    <button onclick="prevSlide()" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button onclick="nextSlide()" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div id="slideCounter" class="text-white font-black tracking-widest text-lg">1 / 4</div>
+                <div class="text-slate-500 text-xs font-bold uppercase tracking-widest">Ebdaa Strategy Presentation 2024</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         الشاشة 4: خطة العمل (Action Plan View)
+         ========================================================= -->
+    <div id="view-actionplan" class="app-view max-w-7xl mx-auto px-6 py-12">
+        <div class="flex justify-between items-center mb-12 no-print">
+            <div>
+                <h2 class="text-3xl font-black text-slate-900 mb-2">خطة العمل التشغيلية (SOP)</h2>
+                <p class="text-slate-600">قائمة المهام والمسؤوليات لكل إدارة لضمان نجاح المنظومة.</p>
+            </div>
+            <button onclick="window.print()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-800 transition">
+                <i class="fa-solid fa-print"></i> طباعة الخطة
+            </button>
+        </div>
+
+        <div class="print-container bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+            <table class="w-full text-right border-collapse">
+                <thead>
+                    <tr class="bg-slate-900 text-white">
+                        <th class="p-5 border-b border-slate-700">الإدارة</th>
+                        <th class="p-5 border-b border-slate-700">المهمة المطلوبة</th>
+                        <th class="p-5 border-b border-slate-700">المخرج المتوقع</th>
+                        <th class="p-5 border-b border-slate-700">الأولوية</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                        <td class="p-5 font-black text-blue-600">المبيعات</td>
+                        <td class="p-5">تعبئة "نموذج مواصفات العميل" بدقة كاملة.</td>
+                        <td class="p-5">ملف مشروع مكتمل البيانات.</td>
+                        <td class="p-5"><span class="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-xs font-black">عاجل جداً</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                        <td class="p-5 font-black text-blue-600">المكتب الفني</td>
+                        <td class="p-5">تحويل الرسومات إلى برامج CNC جاهزة للتشغيل.</td>
+                        <td class="p-5">أكواد تشغيل خالية من الأخطاء.</td>
+                        <td class="p-5"><span class="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-xs font-black">عاجل جداً</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                        <td class="p-5 font-black text-amber-600">التخطيط</td>
+                        <td class="p-5">إصدار "أمر الشغل" الأسبوعي بناءً على الطاقة الاستيعابية.</td>
+                        <td class="p-5">جدول إنتاج واقعي.</td>
+                        <td class="p-5"><span class="bg-amber-100 text-amber-600 px-3 py-1 rounded-full text-xs font-black">متوسط</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                        <td class="p-5 font-black text-rose-600">الإنتاج</td>
+                        <td class="p-5">الالتزام بتسلسل العمليات (تقطيع -> شريط -> تجميع).</td>
+                        <td class="p-5">تقليل الهدر بنسبة 15%.</td>
+                        <td class="p-5"><span class="bg-rose-100 text-rose-600 px-3 py-1 rounded-full text-xs font-black">عاجل جداً</span></td>
+                    </tr>
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                        <td class="p-5 font-black text-emerald-600">الجودة</td>
+                        <td class="p-5">الفحص عند كل محطة إنتاج (In-process QC).</td>
+                        <td class="p-5">تقرير عدم مطابقة (NCR) فوري.</td>
+                        <td class="p-5"><span class="bg-emerald-100 text-emerald-600 px-3 py-1 rounded-full text-xs font-black">مستمر</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         الشاشة 5: دليل المتحدث (Notes View)
+         ========================================================= -->
+    <div id="view-notes" class="app-view max-w-4xl mx-auto px-6 py-12">
+        <div class="space-y-8">
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg">
+                <h3 class="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
+                    <i class="fa-solid fa-quote-right text-purple-500"></i> دليل إدارة الجلسة النقاشية
+                </h3>
+                <div class="space-y-6 text-slate-700 leading-relaxed">
+                    <div class="border-r-4 border-purple-500 pr-6">
+                        <h4 class="font-black text-lg mb-2">المقدمة المقترحة:</h4>
+                        <p>"الزملاء الأعزاء، نحن اليوم لا نناقش مجرد خريطة، بل نضع دستوراً جديداً للعمل في إبداع. الهدف ليس الرقابة، بل حماية مجهود كل واحد منا من الضياع بسبب سوء التنسيق."</p>
+                    </div>
+                    <div class="border-r-4 border-amber-500 pr-6">
+                        <h4 class="font-black text-lg mb-2">عند شرح "بوابة الاعتماد":</h4>
+                        <p>"ركز على أن هذه البوابة هي صمام الأمان. أي دقيقة نقضيها في التأكد من المواصفات هنا، توفر علينا ساعات من إعادة العمل في المصنع."</p>
+                    </div>
+                    <div class="border-r-4 border-emerald-500 pr-6">
+                        <h4 class="font-black text-lg mb-2">رسالة الختام:</h4>
+                        <p>"النظام قوي بقدر التزام أضعف حلقة فيه. نحن فريق واحد، ونجاح المنظومة هو نجاح شخصي لكل مدير إدارة."</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
